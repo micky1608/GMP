@@ -43,6 +43,7 @@ int main(int argc, char*argv[]) {
 	mpz_init(value);
 
 	fibonacci(index , value);
+	fibonacci_log(index , value);
 
 	mpz_clear(index);	
 	mpz_clear(value);
@@ -88,7 +89,39 @@ void fibonacci(mpz_t index , mpz_t value) {
 
 void fibonacci_log(mpz_t index , mpz_t value) {
 
+    if(!mpz_cmp_ui(index,0)) {
+        mpz_set_ui(value,0);
+        return;
+    }
 
+    mpz_t F[2][2];
+
+    mpz_init(F[0][0]);
+    mpz_init(F[0][1]);
+    mpz_init(F[1][0]);
+    mpz_init(F[1][1]);
+
+    mpz_set_ui(F[0][0] , 1);
+    mpz_set_ui(F[0][1] , 1);
+    mpz_set_ui(F[1][0] , 1);
+    mpz_set_ui(F[1][1] , 0);
+
+    mpz_sub_ui(index,index,1);
+    power(F,index);
+
+    mpz_set(value,F[0][0]);
+
+    mpz_clear(F[0][0]);
+    mpz_clear(F[0][1]);
+    mpz_clear(F[1][0]);
+    mpz_clear(F[1][1]);
+
+    printf("\t***** Fibonacci_log *****\n");
+    printf("Index : ");
+    mpz_out_str(stdout,10,index);
+    printf("\nValue : ");
+    mpz_out_str(stdout,10,value);
+    printf("\n");
 }
 
 /************************************************************************************* */
@@ -104,26 +137,26 @@ void multiply(mpz_t M1[2][2] , mpz_t M2[2][2]) {
 	mpz_init(op1);
 	mpz_init(op2);
 
-	mpz_mul(op1,M1[0][0],M2[0][0];
-	mpz_mul(op2,M1[0][1],M2[1][0]; 
+	mpz_mul(op1,M1[0][0],M2[0][0]);
+	mpz_mul(op2,M1[0][1],M2[1][0]);
 	mpz_add(x,op1,op2);
 
-	mpz_mul(op1,M1[0][0],M2[0][1];
-	mpz_mul(op2,M1[0][1],M2[1][1]; 
+	mpz_mul(op1,M1[0][0],M2[0][1]);
+	mpz_mul(op2,M1[0][1],M2[1][1]);
 	mpz_add(y,op1,op2);
 
-	mpz_mul(op1,M1[1][0],M2[0][0];
-	mpz_mul(op2,M1[1][1],M2[1][0]; 
+	mpz_mul(op1,M1[1][0],M2[0][0]);
+	mpz_mul(op2,M1[1][1],M2[1][0]);
 	mpz_add(z,op1,op2);
 
-	mpz_mul(op1,M1[1][0],M2[0][1];
-	mpz_mul(op2,M1[1][1],M2[1][1]; 
+	mpz_mul(op1,M1[1][0],M2[0][1]);
+	mpz_mul(op2,M1[1][1],M2[1][1]);
 	mpz_add(t,op1,op2);
 
 	mpz_set_ui(M1[0][0] , x);
 	mpz_set_ui(M1[0][1] , y);
-	mpz_set_ui(M1[1][0] = z);
-	mpz_set_ui(M1[1][1] = t);
+	mpz_set_ui(M1[1][0] , z);
+	mpz_set_ui(M1[1][1] , t);
 
 	mpz_clear(x);
 	mpz_clear(y);
@@ -137,5 +170,29 @@ void multiply(mpz_t M1[2][2] , mpz_t M2[2][2]) {
 /************************************************************************************* */
 
 void power(mpz_t M[2][2] , mpz_t n) {
+    if (n==0 || n==1) return;
 
+    mpz_t N[2][2];
+
+    mpz_init(N[0][0]);
+    mpz_init(N[0][1]);
+    mpz_init(N[1][0]);
+    mpz_init(N[1][1]);
+
+    mpz_set_ui(N[0][0] , 1);
+    mpz_set_ui(N[0][1] , 1);
+    mpz_set_ui(N[1][0] , 1);
+    mpz_set_ui(N[1][1] , 0);
+
+    power(M , mpz_div_ui(n,n,2));
+    multiply(M,M);
+
+    mpz_mod_ui(n,n,2);
+    if(mpz_cmp_ui(n,0))
+        multiply(M,N);
+
+    mpz_clear(N[0][0]);
+    mpz_clear(N[0][1]);
+    mpz_clear(N[1][0]);
+    mpz_clear(N[1][1]);
 }
