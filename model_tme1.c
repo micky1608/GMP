@@ -40,10 +40,12 @@ int main(int argc, char*argv[]) {
 	printf("\n");
 
 	mpz_t value;
+	mpz_t value2;
 	mpz_init(value);
+	mpz_init(value2);
 
 	fibonacci(index , value);
-	fibonacci_log(index , value);
+	fibonacci_log(index , value2);
 
 	mpz_clear(index);	
 	mpz_clear(value);
@@ -95,19 +97,23 @@ void fibonacci_log(mpz_t index , mpz_t value) {
     }
 
     mpz_t F[2][2];
+    mpz_t i;
 
     mpz_init(F[0][0]);
     mpz_init(F[0][1]);
     mpz_init(F[1][0]);
     mpz_init(F[1][1]);
+    mpz_init(i);
 
     mpz_set_ui(F[0][0] , 1);
     mpz_set_ui(F[0][1] , 1);
     mpz_set_ui(F[1][0] , 1);
     mpz_set_ui(F[1][1] , 0);
+    mpz_add_ui(i,index , 1);
 
-    mpz_sub_ui(index,index,1);
-    power(F,index);
+
+    mpz_sub_ui(i,i,1);
+    power(F,i);
 
     mpz_set(value,F[0][0]);
 
@@ -115,6 +121,7 @@ void fibonacci_log(mpz_t index , mpz_t value) {
     mpz_clear(F[0][1]);
     mpz_clear(F[1][0]);
     mpz_clear(F[1][1]);
+    mpz_clear(i);
 
     printf("\t***** Fibonacci_log *****\n");
     printf("Index : ");
@@ -153,10 +160,10 @@ void multiply(mpz_t M1[2][2] , mpz_t M2[2][2]) {
 	mpz_mul(op2,M1[1][1],M2[1][1]);
 	mpz_add(t,op1,op2);
 
-	mpz_set_ui(M1[0][0] , x);
-	mpz_set_ui(M1[0][1] , y);
-	mpz_set_ui(M1[1][0] , z);
-	mpz_set_ui(M1[1][1] , t);
+	mpz_set(M1[0][0] , x);
+	mpz_set(M1[0][1] , y);
+	mpz_set(M1[1][0] , z);
+	mpz_set(M1[1][1] , t);
 
 	mpz_clear(x);
 	mpz_clear(y);
@@ -170,10 +177,12 @@ void multiply(mpz_t M1[2][2] , mpz_t M2[2][2]) {
 /************************************************************************************* */
 
 void power(mpz_t M[2][2] , mpz_t n) {
-    if (n==0 || n==1) return;
+    if (mpz_cmp_ui(n,0)==0 || mpz_cmp_ui(n,1)==0) return;
 
     mpz_t N[2][2];
+    mpz_t m;
 
+    mpz_init(m);
     mpz_init(N[0][0]);
     mpz_init(N[0][1]);
     mpz_init(N[1][0]);
@@ -184,15 +193,17 @@ void power(mpz_t M[2][2] , mpz_t n) {
     mpz_set_ui(N[1][0] , 1);
     mpz_set_ui(N[1][1] , 0);
 
-    power(M , mpz_div_ui(n,n,2));
+    mpz_div_ui(m,n,2);
+    power(M , m);
     multiply(M,M);
 
-    mpz_mod_ui(n,n,2);
-    if(mpz_cmp_ui(n,0))
+
+    if(mpz_odd_p(n))
         multiply(M,N);
 
     mpz_clear(N[0][0]);
     mpz_clear(N[0][1]);
     mpz_clear(N[1][0]);
     mpz_clear(N[1][1]);
+    mpz_clear(m);
 }
