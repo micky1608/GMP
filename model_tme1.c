@@ -49,6 +49,7 @@ int main(int argc, char*argv[]) {
 
 	mpz_clear(index);	
 	mpz_clear(value);
+
 	return 0;
 }
 
